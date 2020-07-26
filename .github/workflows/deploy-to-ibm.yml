@@ -5,7 +5,7 @@ on:
     branches:
     - master
   schedule:
-    - cron: "0 21 * * 3"
+    - cron: "23 21 * * 3"
 
 jobs:
   deploy:
@@ -21,38 +21,40 @@ jobs:
         touch `date +%Y%m%d%H%M%S`
         cat > config.json << EOF
         {
-          "inbounds": [
+        "inbounds": [
             {
-              "port": 8080,
-              "protocol": "vmess",
-              "settings": {
-                "clients": [
-                  {
-                    "id": "${{ secrets.CF_UUID_IBM }}",
-                    "alterId": 64
-                  }
-                ]
-              },
-              "streamSettings": {
-                "network":"ws"
-              }
+                "port": 8080,
+                "protocol": "vmess",
+                "settings": {
+                    "clients": [
+                        {
+                            "id": "${{ secrets.CF_UUID_IBM }}",
+                            "alterId": 4
+                        }
+                    ]
+                },
+                "streamSettings": {
+                    "network":"ws",
+                    "wsSettings": {
+                        "path": "${{ secrets.CF_PATH_IBM }}"
+                    }
+                }
             }
-          ],
-          "outbounds": [
+        ],
+        "outbounds": [
             {
-              "protocol": "freedom",
-              "settings": {}
+                "protocol": "freedom",
+                "settings": {}
             }
-          ]
+        ]
         }
         EOF
         
         cat > manifest-ibm.yml << EOF
         ---
         applications:
-        - name: v2ws
-          memory: 128M
-          disk_quota: 128M
+        - name: ibm_us_95
+          memory: 256M
           random-route: true
           command: ./v2ray
           buildpacks:
@@ -67,5 +69,5 @@ jobs:
         cf_org: ${{ secrets.CF_ORG_IBM }}
         cf_space: ${{ secrets.CF_SPACE_IBM }}
         command: >
-          push v2ws -f manifest-ibm.yml
+          push ibm_us_95 -f manifest-ibm.yml
           
