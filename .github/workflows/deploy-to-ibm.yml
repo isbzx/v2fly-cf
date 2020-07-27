@@ -53,7 +53,7 @@ jobs:
         cat > manifest-ibm.yml << EOF
         ---
         applications:
-        - name: ibm_us_95
+        - name: v2ibm95
           memory: 256M
           random-route: true
           command: ./v2ray
@@ -69,5 +69,5 @@ jobs:
         cf_org: ${{ secrets.CF_ORG_IBM }}
         cf_space: ${{ secrets.CF_SPACE_IBM }}
         command: >
-          push ibm_us_95 -f manifest-ibm.yml
+          push v2ibm95 -f manifest-ibm.yml
           
